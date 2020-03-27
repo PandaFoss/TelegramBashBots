@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [[ ! -f tokens ]]; then
+    touch tokens
+    echo "BOT_TOKEN=YOUR_TELEGRAM_TOKEN_HERE" > tokens
+    echo "OUO_API=YOUR_OUO_API_LINK_HERE" >> tokens
+    echo "OUO_REFERRAL=YOUR_OUO_REFERRAL_LINK_HERE" >> tokens
+fi
+chmod 600 tokens
+rm $0

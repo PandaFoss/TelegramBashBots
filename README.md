@@ -16,20 +16,7 @@ I have created this repository in order to host a series of bots for Telegram wr
 
 ## Contributing
 
-Any contribution is welcome! You can use the bots created as a reference and help you with the [Google's Shell Style Guide](https://google.github.io/styleguide/shellguide.html). Any requirement or request can be made in the [Issues](https://github.com/PandaFoss/TelegramBashBots/issues) section.
-
-## Donate
-
-If you value the work of this project, I would appreciate any type of donation.
-
-<p align="center">
-<a href="https://liberapay.com/PandaFoss/donate">
-  <img hspace="10" vspace="10" align="center" src="https://github.com/PandaFoss/PandaFoss/blob/master/assets/liberapay.png" height="25px"></img>
-</a>
-<a href="https://cafecito.app/pandafoss">
-  <img hspace="10" vspace="10" align="center" src="https://github.com/PandaFoss/PandaFoss/blob/master/assets/cafecito.png" height="25px"></img>
-</a>
-</p>
+Any contribution is welcome! You can use the bots created as a reference and help you with the [Google's Shell Style Guide](https://google.github.io/styleguide/shellguide.html). Any requirement or request can be made in the [Issues](https://github.com/PandaFoss/TelegramBashBots/issues) section. The [discussion](https://github.com/PandaFoss/TelegramBashBots/discussions) section is also available for... well... discuss...
 
 ## License
 

@@ -23,10 +23,10 @@ If you value the work of this project, I would appreciate any type of donation.
 
 <p align="center">
 <a href="https://liberapay.com/PandaFoss/donate">
-  <img hspace="10" vspace="10" align="center" href="https://github.com/PandaFoss/PandaFoss/blob/master/assets/liberapay.png" height="25px"></img>
+  <img hspace="10" vspace="10" align="center" src="https://github.com/PandaFoss/PandaFoss/blob/master/assets/liberapay.png" height="25px"></img>
 </a>
 <a href="https://cafecito.app/pandafoss">
-  <img hspace="10" vspace="10" align="center" href="https://github.com/PandaFoss/PandaFoss/blob/master/assets/cafecito.png" height="25px"></img>
+  <img hspace="10" vspace="10" align="center" src="https://github.com/PandaFoss/PandaFoss/blob/master/assets/cafecito.png" height="25px"></img>
 </a>
 </p>
 

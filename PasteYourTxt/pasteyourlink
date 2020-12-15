@@ -14,7 +14,7 @@
 
 #== Constants ==================================================
 
-readonly BOT_TOKEN='742680203:AAGEwFBKvMU7oCf448UpllVfVzxCWqmTJAw'
+readonly BOT_TOKEN='<TOKEN>'
 readonly LOGFILE="./history.log"
 readonly TIMEOUT="10"
 readonly URL="https://api.telegram.org/bot${BOT_TOKEN}"

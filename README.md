@@ -12,6 +12,7 @@ I have created this repository in order to host a series of bots for Telegram wr
 ## Bots
 
 - **I Shorten Your Link:** Generate shortened links from the link we send you as a message. Currently supports ouo.io, but more services will be added soon.
+- **Paste Your Link:** Generate a short link using the Hastebin service with the sent text or text file.
 
 ## Contributing
 

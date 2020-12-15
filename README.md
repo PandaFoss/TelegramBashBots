@@ -21,7 +21,14 @@ Any contribution is welcome! You can use the bots created as a reference and hel
 
 If you value the work of this project, I would appreciate any type of donation.
 
-<a href="https://www.buymeacoffee.com/pandafoss" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="63" width="210" ></a>
+<p align="center">
+<a href="https://liberapay.com/PandaFoss/donate">
+  <img hspace="10" vspace="10" align="center" href="https://github.com/PandaFoss/PandaFoss/blob/master/assets/liberapay.png" height="25px"></img>
+</a>
+<a href="https://cafecito.app/pandafoss">
+  <img hspace="10" vspace="10" align="center" href="https://github.com/PandaFoss/PandaFoss/blob/master/assets/cafecito.png" height="25px"></img>
+</a>
+</p>
 
 ## License
 

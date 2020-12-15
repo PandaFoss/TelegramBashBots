@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ ! -f tokens ]]; then
+    touch tokens
+    echo "BOT_TOKEN=YOUR_TELEGRAM_TOKEN_HERE" > tokens
+fi
+chmod 600 tokens
+rm $0

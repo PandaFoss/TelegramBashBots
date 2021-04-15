@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+################################################################
+#   Title: Convertir A PDF Bot                                 #
+#   Author: Panda Foss                                         #
+#   Website: https://pandafoss.github.io/                      #
+#   Github: https://github.com/PandaFoss/                      #
+#   License: GPLv3 and later                                   #
+################################################################
+
+#===  CHECKING TOKENS FILE  ====================================
+
+[[ -f ./tokens ]] && . ./tokens
+
+#== Constants ==================================================
+
+readonly BOT_TOKEN
+readonly LOGFILE="./history.log"
+readonly TIMEOUT="10"
+readonly URL="https://api.telegram.org/bot${BOT_TOKEN}"
+readonly FILE_URL="https://api.telegram.org/file/bot${BOT_TOKEN}"
+readonly BOTNAME="$(curl --silent "${URL}/getMe"               \
+                    | jq .result.username                      \
+                    | tr -d '"')"
+
+#== Functions ==================================================
+
+################################################################
+#   Description: Sending request to telegram api
+#   Arguments: Text to be sent
+#   Output: none
+################################################################
+send_text(){
+    local TEXT=$( sed 's/^\s\+//g' <<< "${1}" )
+    curl --silent "${URL}/sendMessage"                         \
+            --max-time "${TIMEOUT}"                            \
+            --output /dev/null                                 \
+            --data-urlencode "text=${TEXT}"                    \
+                --data "chat_id=${CHAT_ID}"                    \
+                --data "disable_web_page_preview=${PREVIEW}"   \
+                --data "parse_mode=${PARSE_MODE}"
+}
+
+################################################################
+#   Description: Convert a file to PDF
+#   Arguments: File ID, filename and file path
+#   Output: ¿?
+################################################################
+topdf() {
+    local new_filename=${3##*/}
+    local pdf="${2%%.*}.pdf"
+    wget "${FILE_URL}/${3}"
+    mv "${new_filename}" "${2}"
+    libreoffice --convert-to pdf "${2}"         # libreoffice required
+    # Send file
+    curl --silent --form document="@${PWD}/${pdf}"             \
+        "${URL}/sendDocument?chat_id=${CHAT_ID}"
+    # Clean
+    rm "${pdf}" "${2}"
+}
+
+################################################################
+#   Description: Offset messages
+#   Arguments: none
+#   Output: none
+################################################################
+offset(){
+
+               curl --silent "${URL}/getUpdates"               \
+                    --data "offset=$((UPDATE_ID + 1))"         \
+                    --output /dev/null
+
+}
+
+################################################################
+#   Description: Send start command message to Telegram API
+#   Arguments: none
+#   Output: none
+################################################################
+start_command(){
+    PREVIEW=1
+    local TEXT=$(sed 's/^ \+//' <<<"
+            ℹ️ ***INFO***
+
+            Hola! Éste bot permite convertir archivos a PDF. Simplemente envíame el archivo que deseas convertir, ¡y listo!
+
+            Nota: Usa Libreoffice para realizar la conversión. Fue probado con el formato DOCX pero se asume que funciona para todas las extensiones de la suite ofimática.
+
+            💻 ***DESARROLLADOR***
+
+            Desarrollado por @PandaFoss
+            Código Fuente: https://github.com/PandaFoss/TelegramBashBots
+            ")
+    send_text "${TEXT}"
+
+}
+#===  END OF FUNCTIONS  ========================================
+
+while sleep 1; do
+
+    PARSE_MODE="markdown"
+    RAW_MESSAGE=$( curl -s "${URL}/getUpdates" )
+    MSG_COUNT=$( jq '.result | length' <<< "${RAW_MESSAGE}" )
+
+    for i in $( seq 1 "${MSG_COUNT:=0}" ); do
+
+        RESULT_COUNTER=$(( i-1 ))
+
+        UPDATE_ID=$( jq .result[${RESULT_COUNTER}].update_id <<< "${RAW_MESSAGE}"  )
+        CHAT_ID=$( jq .result[${RESULT_COUNTER}].message.chat.id <<< "${RAW_MESSAGE}"  )
+
+        # Get data of file
+        FILE_ID=$( jq  -r .result[${RESULT_COUNTER}].message.document.file_id <<< "${RAW_MESSAGE}"  )
+        FILE_NAME=$( jq  -r .result[${RESULT_COUNTER}].message.document.file_name <<< "${RAW_MESSAGE}"  )
+        FILE_PATH=$(curl --silent "${URL}/getFile" --data "file_id=${FILE_ID}" | jq -r .result.file_path)
+
+        #-------------------------------------------------------------------------------
+        # Checking that the command was sent to your bot
+        #-------------------------------------------------------------------------------
+        PRIVATE=$( jq  -r .result[${RESULT_COUNTER}].message.chat.type <<< "${RAW_MESSAGE}"  | sed 's/private/true/' )
+        CMD_CHECK=$( jq  -r .result[${RESULT_COUNTER}].message.text <<< "${RAW_MESSAGE}"  )
+        if [[ "${CMD_CHECK}" =~ ${BOTNAME/$/\\b} ]]; then
+            MESSAGE=$( sed -r "s/${BOTNAME}//" <<< "${CMD_CHECK}" )
+        else
+            MESSAGE="${CMD_CHECK}"
+        fi
+
+        #-------------------------------------------------------------------------------
+        # If it is not a command, create a command /message with the message
+        #-------------------------------------------------------------------------------
+        if [[ ! "${MESSAGE}" =~ ^/[a-zA-Z0-9]+ ]]; then
+            MESSAGE=$(sed --regexp-extended "s/^/\/message &/" <<< "${MESSAGE}")
+        fi
+
+        ARGS=$( awk '{$1="";print $0}' <<< "${MESSAGE}" | xargs 2>/dev/null )
+        COMMAND=$( awk '{print $1}' <<< "${MESSAGE}" )
+        SENDER=$( jq -r .result[${RESULT_COUNTER}].message.from.username <<< "${RAW_MESSAGE}" )
+
+        case "${COMMAND}" in
+            /start)
+                start_command
+                ;;
+            *)
+                if [[ "${FILE_ID}" == 'null' ]]; then
+                    send_text "Algo salió mal... ¿Me has enviado un documento?"
+                else
+                    send_text "Espere un momento..."
+                    topdf "${FILE_ID}" "${FILE_NAME}" "${FILE_PATH}"
+                fi
+                ;;
+        esac
+
+        offset
+    done
+done
